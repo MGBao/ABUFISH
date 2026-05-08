@@ -1,117 +1,123 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
+
 {% block content %}
-
 <div class="container py-5">
-    <div style="font-size: 30px; color: black;margin-bottom: 50px;" class="text-center">Hoá đơn</div>
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold mb-2" style="color: #333;">LỊCH SỬ HOÁ ĐƠN</h2>
+            <p class="text-muted">Nhấn vào mã đơn hàng để xem chi tiết sản phẩm đã mua</p>
+            <hr class="mx-auto" style="width: 50px; height: 3px; background: #dcb14a; border-radius: 10px; opacity: 1;">
+        </div>
+    </div>
+
     {% for billing in billings %}
-    <div class="row">
+    {% if billing.order.count > 0 %}
+<div class="row mb-3">
         <div class="col-lg-12">
-            <div class="card mb-4" style="margin-bottom:50px" id="tables">
-                <div style="width: 100%;" class="container card-header">
-                    <div class="row ">
-                        <p style="margin-left: 20px;"> <a href="#"> Đơn hàng</a></p>
-                        <p style="margin-left: 20px;"> {{billing.ordered_date}} </p>
-                    </div>                    
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Sản phẩm</th>
-                                <th>Hình ảnh</th>
-                                <th>Qty.</th>
-                                <th>Thời gian đặt</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-                            {% for order in billing.order.all %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td><a
-                                        href="{% url 'store:product-detail' order.product.slug %}">{{order.product.title}}</a>
-                                </td>
-                                <td>
-                                    {% if order.product.product_image %}
-                                    <a href="{% url 'store:product-detail' order.product.slug %}">
-                                        <img src="{{order.product.product_image.url}}"
-                                            alt="{{order.product.product_title}}" style="width:150px;">
-                                    </a>
-                                    {% endif %}
-
-                                </td>
-                                <td>{{order.quantity}}</td>
-                                <td>{{order.ordered_date|naturaltime}}</td>
-                                <td>
-
-                                    {% if order.status == 'Pending' %}
-
-                                    Đang xử lý
-                                    {% endif %}
-
-                                    {% if order.status == 'Accepted' %}
-                                    <div class="bg-light border border-primary">
-                                        <div class="p-3 bg-primary" style="width:0;"></div>
-                                    </div>
-                                    Đã xác nhận
-                                    {% endif %}
-
-                                    {% if order.status == 'Packed' %}
-                                    <div class="bg-light border border-primary">
-                                        <div class="p-3 bg-primary" style="width:40%;"></div>
-                                    </div>
-                                    Đã đóng gói
-                                    {% endif %}
-
-
-                                    {% if order.status == 'On The Way' %}
-                                    <div class="bg-light border border-primary">
-                                        <div class="p-3 bg-primary" style="width:70%;"></div>
-                                    </div>
-                                    Đã vận chuyển
-                                    {% endif %}
-
-                                    {% if order.status == 'Delivered' %}
-                                    <div class="bg-light border border-primary">
-                                        <div class="p-3 bg-primary" style="width:100%;"></div>
-                                    </div>
-                                    Đã giao hàng
-                                    {% endif %}
-
-                                    {% if order.status == 'Cancelled' %}
-                                    <div class="bg-light border border-danger">
-                                        <div class="p-3 bg-danger" style="width:100%;"></div>
-                                    </div>
-                                    Đã huỷ
-                                    {% endif %}
-
-                                    <!-- {{order.status}} -->
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            
-
-                        </tbody>
-                    </table>
-
-                </div>
-                <div style="width: 100%;" class="container card-header">
-                    <div class="row ">
-                        <p style="margin-left: 20px;"> Tổng số tiền: </p>
-                        <p style="margin-left: 20px;"> {{billing.price|floatformat:0}} đ</p>
+            <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                
+                <div class="card-header bg-black py-4 ps-4" 
+                     style="cursor: pointer;" 
+                     data-bs-toggle="collapse" 
+                     data-bs-target="#invoice-detail-{{ billing.id }}" 
+                     aria-expanded="false">
+                    
+                    <div class="row align-items-center">
+                        <div class="col-6 col-md-4">
+                            <span class="fw-bold text-dark">
+                                <i class="fas fa-file-invoice-dollar me-2 text-primary"></i> 
+                                Hoá đơn 
+                            </span>
+                        </div>
+                        <div class="col-md-4 d-none d-md-block text-muted small text-center">
+                            <i class="far fa-calendar-alt me-1"></i> {{ billing.ordered_date|date:"d/m/Y H:i" }}
+                        </div>
+                        <div class="col-6 col-md-4 text-end">
+                            <span class="text-muted me-2 small">Tổng:</span>
+                            <span class="fw-bold text-danger me-2">{{ billing.price|floatformat:0|intcomma }}đ</span>
+                            <i class="fas fa-chevron-down text-muted transition-icon"></i>
+                        </div>
                     </div>
                 </div>
+
+                <div class="collapse" id="invoice-detail-{{ billing.id }}">
+                    <div class="card-body p-0 border-top">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+    <tr class="text-secondary small text-uppercase" style="font-size: 0.75rem;">
+        <th class="ps-4" style="width: 40%;">Tên sản phẩm</th>
+        <th class="text-center" style="width: 15%;">Số lượng</th>
+        <th class="text-center" style="width: 20%;">Trạng thái</th>
+        <th class="text-end pe-4" style="width: 25%;">Đơn giá</th>
+    </tr>
+</thead>
+<tbody>
+    {% for o in billing.order.all %}
+    <tr>
+        <td class="ps-4 py-3">
+            <div class="d-flex align-items-center">
+                {% if o.product.product_image %}
+                    <img src="{{ o.product.product_image.url }}" 
+                         style="width:40px; height:40px; object-fit:cover; border-radius:6px;" 
+                         class="me-3">
+                {% endif %}
+                <span class="fw-bold text-dark small">{{ o.product.title }}</span>
+            </div>
+        </td>
+        <td class="text-center fw-bold text-secondary">x{{ o.quantity }}</td>
+        <td class="text-center">
+            {% if o.status == 'Delivered' %}
+                <span class="badge rounded-pill bg-success"><i class="fas fa-home me-1"></i> Thành công</span>
+            {% elif o.status == 'On The Way' %}
+                <span class="badge rounded-pill bg-primary"><i class="fas fa-shipping-fast me-1"></i> Đang giao</span>
+            {% elif o.status == 'Packed' %}
+                <span class="badge rounded-pill bg-warning text-dark"><i class="fas fa-box-open me-1"></i> Đã đóng gói</span>
+            {% elif o.status == 'Accepted' %}
+                <span class="badge rounded-pill bg-info"><i class="fas fa-check-circle me-1"></i> Đã xác nhận</span>
+            {% elif o.status == 'Cancelled' %}
+                <span class="badge rounded-pill bg-danger"><i class="fas fa-times-circle me-1"></i> Đã huỷ</span>
+            {% else %}
+                <span class="badge rounded-pill bg-secondary"><i class="fas fa-spinner fa-spin me-1"></i> Đang xử lý</span>
+            {% endif %}
+        </td>
+        <td class="text-end pe-4">
+            <span class="fw-bold text-primary">{{ o.product.price|floatformat:0|intcomma }}đ</span>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+                            </table>
+                        </div>
+                        <div class="bg-light p-2 text-center">
+                            <small class="text-muted" style="font-size: 0.7rem;">Cảm ơn đã ủng hộ ABUFISH!</small>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-
-    
-    
+    </div>
+{% endif %}
+    {% empty %}
+    <div class="text-center py-5">
+        <p class="text-muted">Chưa có hoá đơn nào hết trơn.</p>
+        <a href="{% url 'store:home' %}" class="btn btn-sm btn-primary rounded-pill px-4">Đi mua cá ngay</a>
     </div>
     {% endfor %}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    /* Hiệu ứng xoay mũi tên */
+    [aria-expanded="true"] .transition-icon { transform: rotate(180deg); }
+    .transition-icon { transition: transform 0.3s ease; }
+    
+    /* Làm mờ nhẹ dòng khi rà chuột */
+    .table-hover tbody tr:hover { background-color: #fdfdfd; }
+    .card-header:hover { background-color: #fafafa !important; }
+</style>
 {% endblock content %}

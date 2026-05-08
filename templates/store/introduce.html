@@ -1,80 +1,102 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>{% block metatitle %}Tiki{% endblock metatitle %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.footer.css' %}">
-    <link rel="stylesheet" href="{% static 'css/intro.css' %}">
-    <!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-    <!-- Favicon-->
-    <link rel="shortcut icon" type="image/png" href="{% static 'img/logo-tiki.png' %}">
-</head>
+{% block metatitle %}Giới thiệu - ABUFISH{% endblock metatitle %}
 
-<body >
-    <div class="contain mx-auto mt-5 col-md-10 mt-100">  
-        <img style='height: 550px; width: 1240px' src="{% static 'img/poster.png' %}">
+{% block content %}
+<div class="container py-5">
+
+    <!-- Banner giới thiệu -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold" style="color: #1a94ff;"> ABUFISH</h1>
+        <p class="text-muted fs-5">Thế Giới Cá Cảnh Online</p>
+        <hr class="mx-auto" style="width: 60px; height: 3px; background: #dcb14a; border-radius: 10px; opacity: 1;">
     </div>
-    <div style="background: #1a94ff; align-items: center;margin:auto" class=' container mx-auto mt-1 col-md-10 mt-100'>
-        <div style="color:white" class="title">Tiki</div>
-        <div class=" " style="padding-bottom: 30px;padding-top: 30px;max-width: 650px;text-align: center;align-items: center;margin:auto">
-            <p ><small  class="text-white">Website bán hàng trực tuyến hay website thương mại điện tử được hiểu là trang thông tin
-                điện tử được thiết lập để phục vụ một phần hoặc toàn bộ quy trình của hoạt động mua bán hàng hóa hay cung ứng
-                dịch vụ, từ trưng bày giới thiệu hàng hóa, dịch vụ đến giao kết hợp đồng, cung ứng dịch vụ, thanh toán và dịch
-                vụ sau bán hàng.</p>
-        </div>       
 
-    </div>
-    <div style="background: #1a94ff; " class='container mx-auto mt-5 col-md-10 mt-100'>
-        <div class="header">
-            <div style="color:white" class="title">Tiki Team</div>
-            <p style="color:white; font-size: 20px;" class=""><small class="">Đội ngũ phát triển giàu kinh nghiệm!</p>
+    <!-- Giới thiệu shop -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <img src="{% static 'img/logo.jpg' %}" alt="ABUFISH" class="img-fluid rounded-4 shadow" style="max-height: 350px; width: 100%; object-fit: cover;">
         </div>
-        <div class="row justify-content-center pb-5">
-            <div  class="card col-md-3 mt-100">
-                <div class="card-content">
-                    <div class="card-body p-0">
-                        <div class="profile"> <img
-                                src="{% static 'img/TD_.png' %}"> </div>
-                        <div style="color:#1a94ff;font-size: 16px;" class="card-title "> Tăng Thế Duy<br /> <small>Developer</small>
+        <div class="col-md-6">
+            <h3 class="fw-bold mb-3">Chào mừng đến với ABUFISH! 🌊</h3>
+            <p class="text-muted">Chúng tôi chuyên cung cấp các loại cá cảnh đẹp, đa dạng từ cá nước ngọt đến cá biển, được hướng dẫn chăm sóc chất lượng. Với cam kết giá cả hợp lý – dịch vụ tận tâm – giao hàng nhanh chóng.</p>
+            <div class="row mt-4">
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-fish fa-2x me-3" style="color: #1a94ff;"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">100+</h6>
+                            <small class="text-muted">Loài cá cảnh</small>
                         </div>
-                        <div class="card-subtitle">
-                            <p  style="color:#1a94ff;font-size: 20px;" > <small class=""> Đã có thành thạo nhiều ngôn ngữ lập trình: python, java, c++,... và 2 năm kinh nghiệm trong nghề. </small> </p>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-users fa-2x me-3" style="color: #dcb14a;"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">500+</h6>
+                            <small class="text-muted">Khách hàng</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-truck fa-2x me-3" style="color: #1a94ff;"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">Nhanh chóng</h6>
+                            <small class="text-muted">Giao hàng tận nơi</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-headset fa-2x me-3" style="color: #dcb14a;"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">24/7</h6>
+                            <small class="text-muted">Hỗ trợ miễn phí</small>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card col-md-3 mt-100">
-                <div class="card-content">
-                    <div class="card-body p-0">
-                        <div class="profile"> <img
-                                src="{% static 'img/MD_.png' %}"> </div>
-                        <div style="color:#1a94ff;font-size: 16px;" class="card-title "> Lê Minh Dũng<br /> <small>Manager</small> </div>
-                        <div class="card-subtitle">
-                            <p  style="color:#1a94ff; font-size: 20px;" > <small class=""> Người ham học hỏi, sáng tạo và có kinh nghiệm trong các dự án.</small> </p>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
+
+    <!-- Dịch vụ -->
+    <div class="row mb-5 text-center">
+        <div class="col-12 mb-4">
+            <h3 class="fw-bold">Chúng tôi cung cấp</h3>
+            <hr class="mx-auto" style="width: 60px; height: 3px; background: #dcb14a; border-radius: 10px; opacity: 1;">
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <i class="fas fa-fish fa-3x mb-3" style="color: #1a94ff;"></i>
+                <h6 class="fw-bold">Cá cảnh đa dạng</h6>
+                <p class="text-muted small">Hàng trăm loài cá cảnh độc đáo, đầy màu sắc từ khắp nơi trên thế giới.</p>
             </div>
-            <div class="card col-md-3 mt-100">
-                <div class="card-content">
-                    <div class="card-body p-0">
-                        <div class="profile"> <img
-                                src="{% static 'img/KD_.png' %}"> </div>
-                        <div style="color:#1a94ff;font-size: 16px;" class="card-title "> Trần Khánh Duy<br /> <small>Designer</small> </div>
-                        <div class="card-subtitle">
-                            <p  style="color:#1a94ff;font-size: 20px;" > <small class=""> Là nhà thiết kế bán chuyên, với nhiều thiết kế gây ấn tượng mạnh với các bạn trẻ bây giờ. </small> </p>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <i class="fas fa-leaf fa-3x mb-3" style="color: #28a745;"></i>
+                <h6 class="fw-bold">Cây thủy sinh</h6>
+                <p class="text-muted small">Cây thủy sinh, hồ cá, thức ăn và thiết bị chăm sóc chất lượng cao.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <i class="fas fa-comments fa-3x mb-3" style="color: #dcb14a;"></i>
+                <h6 class="fw-bold">Tư vấn miễn phí</h6>
+                <p class="text-muted small">Đội ngũ am hiểu về cá cảnh, sẵn sàng tư vấn miễn phí mọi lúc.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <i class="fas fa-shipping-fast fa-3x mb-3" style="color: #dc3545;"></i>
+                <h6 class="fw-bold">Giao hàng nhanh</h6>
+                <p class="text-muted small">Đặt hàng online, giao tận nơi an toàn và nhanh chóng trên toàn quốc.</p>
             </div>
         </div>
     </div>
 
     
-</body>
-
-</html>
-
+{% endblock content %}

@@ -1,428 +1,255 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
-      {% include 'partials/_messages.html' %}
-      <!-- SLIDER-->
-      <div class="container" style="margin-top: 10px;">
-        
-        <section  id="Slider">
-          
-            <div class="aspect-ratio-169">
-              <img src="{% static 'img/slide1.jpg' %}">
-              <img src="{% static 'img/slide2.jpg' %}">
-              <img src="{% static 'img/slide3.jpg' %}">
-              <img src="{% static 'img/slide4.jpg' %}">
-            </div>
+{% include 'partials/_messages.html' %}
 
-            <div class="dot-container">
-              <div class="dot active"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>            
-            </div>
-          
-        </section>
+<div class="container" style="margin-top: 10px;">
+    <section id="Slider">
+        <div class="aspect-ratio-169">
+            <img src="{% static 'img/anhnen1.jpg' %}" alt="Banner 1">
+            <img src="{% static 'img/anhnen2.jpg' %}" alt="Banner 2">
+            <img src="{% static 'img/anhnen3.jpg' %}" alt="Banner 3">
+            <img src="{% static 'img/anhnen4.jpg' %}" alt="Banner 4">
+        </div>
 
-       
-        <!-- CATEGORIES SECTION-->
-        <section class="pt-5">
-          <header class="text-center">
+        <div class="dot-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </section>
+
+    <section class="pt-5">
+        <header class="text-center">
             <p class="small text-muted small text-uppercase mb-1">Mua sắm ngay</p>
-            <h2 class="h5 text-uppercase mb-4">Các danh mục sách được yêu thích nhất</h2>
-          </header>
-          
-          <div class="row">
-          {% if categories %}
-            {% for category in categories %}
+            <h2 class="h5 text-uppercase mb-4">Danh mục cá yêu thích nhất</h2>
+        </header>
 
-              <div class="col-md-3 mb-4 mb-md-0">
-                <a class="category-item" href="{% url 'store:category-products' category.slug %}">
-                  {% if category.category_image %}
-                    <img class="img-fluid" src="{{ category.category_image.url }}" alt="{{ category.title }}">
-                    {% else %}
-                    <img class="img-fluid" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}">
-                  {% endif %}
-                  <strong class="category-item-title text-center">{{ category.title }}</strong>
-                </a>
-              </div>
-            
-            {% endfor %}
-          {% endif %}
-          </div>
-        </section>
-
-         <!-- MOST VIEW PRODUCTS-->
-         <section class="py-5">
-          <header>
-            <p class="small text-muted small text-uppercase mb-1">Hãy mua theo cách của bạn !</p>
-            <h2 class="h5 text-uppercase mb-4">Sản phẩm được xem nhiều nhất</h2>
-          </header>
-          <div class="row">
-
-            {% if products_popular %}
-              {% for product in products_popular %}
-              
-                <!-- PRODUCT-->
-                <div class="col-xl-3 col-lg-4 col-sm-6">
-                  <div class="product text-center">
-                    <div class="position-relative mb-3">
-
-                      <div class="badge text-white badge-"></div>
-                      
-                      <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                        {% if product.product_image %}
-                          <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
-                        {% else %}
-                          <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
-                        {% endif %}
-                      </a>
-
-                      <div class="product-overlay">
-                        <ul class="mb-0 list-inline">
-                          <li class="list-inline-item m-0 p-0">
-                            {% comment %}<a class="btn btn-sm btn-outline-dark" href="#" ><i class="far fa-heart "></i></a>{% endcomment %}
-                            <form action="{% url 'store:add-notifi-like-home' %}">
-                              <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                              {% if user not in product.user_likes.all %}
-                              <button type="submit" class="btn btn-sm btn-outline-dark"><i class="far fa-heart " style="color:red"></i></button>
-                              {% else %}
-                              <button type="submit" class="btn btn-sm btn-outline-dark"><i class="fas fa-heart " style="color:red"></i></button>
-                              {% endif %}
-                            </form>
-                          </li>
-                          <li class="list-inline-item m-0 p-0">
-                            {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Thêm vào giỏ</a> {% endcomment %}
-
-                            <form action="{% url 'store:add-to-cart' %}">
-                              <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                              <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
-                            </form>
-
-                          </li>
-                        </ul>
-                      </div>
+        <div class="row">
+            {% if categories %}
+                {% for category in categories %}
+                    <div class="col-md-3 mb-4 text-center">
+                        <a class="category-item d-block text-decoration-none" href="{% url 'store:category-products' category.slug %}">
+                            <div class="cat-img-wrapper mb-2">
+                                {% if category.category_image %}
+                                    <img class="img-fluid rounded-circle shadow-sm" src="{{ category.category_image.url }}" alt="{{ category.title }}" style="width: 140px; height: 140px; object-fit: cover; border: 3px solid #eee;">
+                                {% else %}
+                                    <img class="img-fluid rounded-circle shadow-sm" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}" style="width: 140px; height: 140px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <strong class="category-item-title text-dark">{{ category.title }}</strong>
+                        </a>
                     </div>
-                    <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
-                    <p class="small text-muted">{{product.price|floatformat:0}} đ</p>
-                  </div>
-                </div>
-
-              {% endfor %}
-            {% endif %}
-
-            
-
-          </div>
-        </section>
-
-        <section class="py-5">
-          <div>
-            {% if user.is_authenticated %}
-            <header>
-              <h2 class="h5 text-uppercase mb-4">Xem gần đây</h2>
-            </header>
-            {% endif %}
-            <div class="row">
-          
-              {% if lastseen_products %}
-              {% for product in lastseen_products %}
-          
-              <!-- PRODUCT-->
-              <div class="col-xl-3 col-lg-4 col-sm-6">
-                <div class="product text-center">
-                  <div class="position-relative mb-3">
-          
-                    <div class="badge text-white badge-"></div>
-          
-                    <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                      {% if product.product_image %}
-                      <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
-                      {% else %}
-                      <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
-                      {% endif %}
-                    </a>
-          
-                    <div class="product-overlay">
-                      <ul class="mb-0 list-inline">
-                        <li class="list-inline-item m-0 p-0">
-                          {% comment %}<a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart "></i></a>{%
-                          endcomment %}
-                          <form action="{% url 'store:add-notifi-like-home' %}">
-                            <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                            {% if user not in product.user_likes.all %}
-                            <button type="submit" class="btn btn-sm btn-outline-dark"><i class="far fa-heart "
-                                style="color:red"></i></button>
-                            {% else %}
-                            <button type="submit" class="btn btn-sm btn-outline-dark"><i class="fas fa-heart "
-                                style="color:red"></i></button>
-                            {% endif %}
-                          </form>
-                        </li>
-                        <li class="list-inline-item m-0 p-0">
-                          {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Thêm vào giỏ</a> {%
-                          endcomment %}
-          
-                          <form action="{% url 'store:add-to-cart' %}">
-                            <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                            <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
-                          </form>
-          
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
-                  <p class="small text-muted">{{product.price|floatformat:0}} đ</p>
-                </div>
-              </div>
-          
-              {% endfor %}              
-              {% endif %}
-          
-          
-          
-            </div>
-          </div>
-        </section>
-        
-        <!-- TRENDING PRODUCTS-->
-        <section class="py-5">
-          <header>
-            <p class="small text-muted small text-uppercase mb-1">Hãy mua theo cách của bạn !</p>
-            <h2 class="h5 text-uppercase mb-4">Sản phẩm mới nhất hiện nay</h2>
-          </header>
-          <div class="row">
-
-            {% if products %}
-              {% for product in products %}
-              
-                <!-- PRODUCT-->
-                <div class="col-xl-3 col-lg-4 col-sm-6">
-                  <div class="product text-center">
-                    <div class="position-relative mb-3">
-
-                      <div class="badge text-white badge-"></div>
-                      
-                      <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                        {% if product.product_image %}
-                          <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
-                        {% else %}
-                          <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
-                        {% endif %}
-                      </a>
-
-                      <div class="product-overlay">
-                        <ul class="mb-0 list-inline">
-                          <li class="list-inline-item m-0 p-0">
-                            {% comment %}<a class="btn btn-sm btn-outline-dark" href="#" ><i class="far fa-heart "></i></a>{% endcomment %}
-                            <form action="{% url 'store:add-notifi-like-home' %}">
-                              <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                              {% if user not in product.user_likes.all %}
-                              <button type="submit" class="btn btn-sm btn-outline-dark"><i class="far fa-heart " style="color:red"></i></button>
-                              {% else %}
-                              <button type="submit" class="btn btn-sm btn-outline-dark"><i class="fas fa-heart " style="color:red"></i></button>
-                              {% endif %}
-                            </form>
-                          </li>
-                          <li class="list-inline-item m-0 p-0">
-                            {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Thêm vào giỏ</a> {% endcomment %}
-
-                            <form action="{% url 'store:add-to-cart' %}">
-                              <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                              <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
-                            </form>
-
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
-                    <p class="small text-muted">{{product.price|floatformat:0}} đ</p>
-                  </div>
-                </div>
-
-              {% endfor %}
-            {% endif %}
-
-            
-
-          </div>
-        </section>
-
-        <!-- Post -->
-
-        <section style="margin-bottom: 100px;">
-          <div style="margin-bottom: 100px;" class="row">            
-
-          {% if all_categories %}
-            {% for category in all_categories %}
-              <div class="col-md-10">
-                <header  style="margin-bottom: 10px;" >
-                  <a  href="{% url 'store:category-products' category.slug %}">
-                    <h2 style="font-size: 25px;" class="h5 text-uppercase mb-4">{{ category.title}}</h2>
-                  </a>                  
-                </header>
-                
-              </div>
-              <a style="right:0; color:black" href="{% url 'store:category-products' category.slug %}" >
-                Xem thêm 
-              </a>
-              <div class="row">
-                {% for product in all_products %}
-                  {% if product.category == category%}  
-                    
-                    <!-- PRODUCT-->
-                    <div class="col-xl-3 col-lg-4 col-sm-6">
-                      <div class="product text-center">
-                        <div class="position-relative mb-3">
-                    
-                          <div class="badge text-white badge-"></div>
-                    
-                          <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                            {% if product.product_image %}
-                            <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
-                            {% else %}
-                            <img style='height: 255px; width: 255px' class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
-                            {% endif %}
-                          </a>
-                    
-                          <div class="product-overlay">
-                            <ul class="mb-0 list-inline">
-                              <li class="list-inline-item m-0 p-0">
-                                  {% comment %}<a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart "></i></a>{% endcomment %}
-                                  <form action="{% url 'store:add-notifi-like-home' %}">
-                                    <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                                    {% if user not in product.user_likes.all %}
-                                    <button type="submit" class="btn btn-sm btn-outline-dark"><i class="far fa-heart " style="color:red"></i></button>
-                                    {% else %}
-                                    <button type="submit" class="btn btn-sm btn-outline-dark"><i class="fas fa-heart " style="color:red"></i></button>
-                                    {% endif %}
-                                  </form>
-                              <li class="list-inline-item m-0 p-0">
-                                {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Thêm vào giỏ</a> {%endcomment %}
-                    
-                                <form action="{% url 'store:add-to-cart' %}">
-                                  <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                                  <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
-                                </form>
-                    
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
-                        <p class="small text-muted">{{product.price|floatformat:0}} đ</p>
-                      </div>
-                    </div>
-                  {% endif %}
                 {% endfor %}
-              </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {% if products_popular %}
+    <section class="py-5">
+        <header class="mb-4">
+            <p class="small text-muted small text-uppercase mb-1">Hãy mua theo cách của bạn!</p>
+            <h2 class="h5 text-uppercase">Sản phẩm xem nhiều nhất</h2>
+        </header>
+        <div class="row">
+            {% for product in products_popular %}
+                <div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
+                    <div class="product text-center">
+                        <div class="position-relative mb-3">
+                            <a class="d-block product-img-container" href="{% url 'store:product-detail' product.slug %}">
+                                {% if product.product_image %}
+                                    <img class="img-fluid" src="{{ product.product_image.url }}" alt="{{ product.title }}">
+                                {% else %}
+                                    <img class="img-fluid" src="{% static 'img/product-1.jpg' %}" alt="{{ product.title }}">
+                                {% endif %}
+                            </a>
+                            <div class="product-overlay">
+                                <ul class="mb-0 list-inline">
+                                    <li class="list-inline-item m-0 p-0">
+                                        <button type="button" class="btn btn-sm btn-outline-dark like-btn" 
+    data-prod-id="{{ product.id }}"
+    data-url="{% url 'store:add-notifi-like-home' %}">
+    <i class="{% if user in product.user_likes.all %}fas{% else %}far{% endif %} fa-heart" style="color:red"></i>
+</button>
+                                    </li>
+                                    <li class="list-inline-item m-0 p-0">
+                                        <form action="{% url 'store:add-to-cart' %}" class="d-inline">
+                                            <input type="hidden" name="prod_id" value="{{product.id}}">
+                                            <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <h6><a class="reset-anchor fw-bold" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
+                        <p class="small text-primary fw-bold">{{ product.price|floatformat:0|intcomma }} đ</p>
+                    </div>
+                </div>
             {% endfor %}
-          {% endif %}
-          </div>
-        </section>
+        </div>
+    </section>
+    {% endif %}
 
+    {% if user.is_authenticated and lastseen_products %}
+    <section class="py-5 border-top">
+        <header class="mb-4">
+            <h2 class="h5 text-uppercase">Vừa xem gần đây</h2>
+        </header>
+        <div class="row">
+            {% for product in lastseen_products %}
+                <div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
+                    <div class="product text-center">
+                        <div class="position-relative mb-3">
+                            <a class="d-block product-img-container" href="{% url 'store:product-detail' product.slug %}">
+                                {% if product.product_image %}
+                                    <img class="img-fluid" src="{{ product.product_image.url }}" alt="{{ product.title }}">
+                                {% else %}
+                                    <img class="img-fluid" src="{% static 'img/product-1.jpg' %}" alt="{{ product.title }}">
+                                {% endif %}
+                            </a>
+                            </div>
+                        <h6><a class="reset-anchor fw-bold" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
+                        <p class="small text-primary fw-bold">{{ product.price|floatformat:0|intcomma }} đ</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 
-        <!-- SERVICES-->
-        <section class="py-5 bg-light">
-          <div class="container">
-            <div class="row text-center">
-              <div class="col-lg-4 mb-3 mb-lg-0">
-                <div class="d-inline-block">
-                  <div class="media align-items-end">
-                    <svg class="svg-icon svg-icon-big svg-icon-light">
-                      <use xlink:href="#delivery-time-1"> </use>
-                    </svg>
-                    <div class="media-body text-left ml-3">
-                      <h6 class="text-uppercase mb-1">Free shipping</h6>
-                      <p class="text-small mb-0 text-muted">Free shipping toàn quốc</p>
+    <section class="py-5 border-top">
+        <header class="mb-4">
+            <p class="small text-muted small text-uppercase mb-1">Mới cập bến Abufish</p>
+            <h2 class="h5 text-uppercase">Sản phẩm mới nhất hiện nay</h2>
+        </header>
+        <div class="row">
+            {% if products %}
+                {% for product in products %}
+                    <div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
+                        <div class="product text-center shadow-sm p-2 rounded">
+                            <div class="position-relative mb-3">
+                                <a class="d-block product-img-container" href="{% url 'store:product-detail' product.slug %}">
+                                    {% if product.product_image %}
+                                        <img class="img-fluid" src="{{ product.product_image.url }}" alt="{{ product.title }}">
+                                    {% else %}
+                                        <img class="img-fluid" src="{% static 'img/product-1.jpg' %}" alt="{{ product.title }}">
+                                    {% endif %}
+                                </a>
+                                </div>
+                            <h6><a class="reset-anchor fw-bold" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a></h6>
+                            <p class="small text-primary fw-bold">{{ product.price|floatformat:0|intcomma }} đ</p>
+                        </div>
                     </div>
-                  </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="py-5 bg-light rounded shadow-sm mb-5">
+        <div class="container">
+            <div class="row text-center service-box">
+                <div class="col-lg-4 mb-3 mb-lg-0">
+                    <i class="fas fa-truck fa-2x text-primary mb-3"></i>
+                    <h6 class="text-uppercase mb-1 fw-bold">Free shipping</h6>
+                    <p class="small mb-0 text-muted">Vận chuyển an toàn tận tay</p>
                 </div>
-              </div>
-              <div class="col-lg-4 mb-3 mb-lg-0">
-                <div class="d-inline-block">
-                  <div class="media align-items-end">
-                    <svg class="svg-icon svg-icon-big svg-icon-light">
-                      <use xlink:href="#helpline-24h-1"> </use>
-                    </svg>
-                    <div class="media-body text-left ml-3">
-                      <h6 class="text-uppercase mb-1">24 x 7 dịch vụ</h6>
-                      <p class="text-small mb-0 text-muted">Free shipping toàn quốc</p>
-                    </div>
-                  </div>
+                <div class="col-lg-4 mb-3 mb-lg-0">
+                    <i class="fas fa-headset fa-2x text-primary mb-3"></i>
+                    <h6 class="text-uppercase mb-1 fw-bold">Hỗ trợ 24/7</h6>
+                    <p class="small mb-0 text-muted">Tư vấn chăm sóc cá miễn phí</p>
                 </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="d-inline-block">
-                  <div class="media align-items-end">
-                    <svg class="svg-icon svg-icon-big svg-icon-light">
-                      <use xlink:href="#label-tag-1"> </use>
-                    </svg>
-                    <div class="media-body text-left ml-3">
-                      <h6 class="text-uppercase mb-1">Khuyến mãi sốc</h6>
-                      <p class="text-small mb-0 text-muted">Free shipping toàn quốc</p>
-                    </div>
-                  </div>
+                <div class="col-lg-4">
+                    <i class="fas fa-certificate fa-2x text-warning mb-3"></i>
+                    <h6 class="text-uppercase mb-1 fw-bold">Uy tín 100%</h6>
+                    <p class="small mb-0 text-muted">Cá khỏe, đúng dòng, đúng mẫu</p>
                 </div>
-              </div>
             </div>
-          </div>
-        </section>
+        </div>
+    </section>
+</div>
 
+<style>
+    
+    #Slider { position: relative; overflow: hidden; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .aspect-ratio-169 { display: block; position: relative; padding-top: 40%; width: 100%; height: 0; transition: transform 0.5s ease-in-out; }
+    .aspect-ratio-169 img { display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; object-fit: cover; object-position: top; transition: 0.5s ease-in-out; }
+    .dot-container { display: flex; justify-content: center; position: absolute; bottom: 20px; width: 100%; z-index: 10; }
+    .dot { height: 8px; width: 8px; background-color: rgba(255, 255, 255, 0.5); border-radius: 50%; margin: 0 5px; cursor: pointer; transition: 0.3s; }
+    .dot.active { background-color: #fff; width: 20px; border-radius: 5px; }
 
-        <!-- NEWSLETTER-->
-        <section class="py-5">
-          <div class="container p-0">
-            <div class="row">
-              <div class="col-lg-6 mb-3 mb-lg-0">
-                <h5 class="text-uppercase">Tiki sẽ đồng hành cùng bạn!</h5>
-                <p class="text-small text-muted mb-0">Hãy theo dõi khuyến mãi từ Tiki</p>
-              </div>
-              <div class="col-lg-6">
-                <form action="" method="get">
-                  <div class="input-group flex-column flex-sm-row mb-3">
-                    <input class="form-control form-control-lg py-3" type="email" placeholder="Nhập email của bạn để nhận thông báo" aria-describedby="button-addon2" name="gmail">
-                    <div class="input-group-append">
-                      <button class="btn btn-dark btn-block" id="button-addon2" type="submit">Theo dõi</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+   
+    .product-img-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; 
+        overflow: hidden;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+    }
 
-      <script>
-        const imgPosition = document.querySelectorAll(".aspect-ratio-169 img")
-        const imgContainer = document.querySelector('.aspect-ratio-169')
-        const dotItem = document.querySelectorAll(".dot")
-        let imgNuber = imgPosition.length
-        let index = 3
-        imgPosition.forEach(function (image, index) {
-          image.style.left = index * 100 + "%"
-          dotItem[index].addEventListener("click", function () {
-            slider(index)
-          })
-        })
+    .product-img-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+        transition: transform 0.5s ease;
+    }
 
-        function imgSlide() {
-          index++;
-          if (index >= imgNuber) { index = 0 }
-          slider(index)
-        }
+    .product:hover .product-img-container img {
+        transform: scale(1.1); 
+    }
+</style>
 
+<script>
+    const imgPosition = document.querySelectorAll(".aspect-ratio-169 img");
+    const imgContainer = document.querySelector('.aspect-ratio-169');
+    const dotItem = document.querySelectorAll(".dot");
+    let imgNumber = imgPosition.length;
+    let index = 0;
+    imgPosition.forEach(function (image, i) {
+        image.style.left = i * 100 + "%";
+        dotItem[i].addEventListener("click", function () { slider(i); });
+    });
+    function imgSlide() { index++; if (index >= imgNumber) { index = 0; } slider(index); }
+    function slider(i) {
+        index = i;
+        imgContainer.style.transform = `translateX(-${index * 100}%)`;
+        const dotActive = document.querySelector('.dot.active');
+        if (dotActive) dotActive.classList.remove("active");
+        dotItem[index].classList.add("active");
+    }
+    setInterval(imgSlide, 5000);
+</script>
+<script>
+document.querySelectorAll('.like-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const prodId = this.dataset.prodId;
+        const url = this.dataset.url;
+        const icon = this.querySelector('i');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') ? 
+            document.querySelector('[name=csrfmiddlewaretoken]').value : 
+            '{{ csrf_token }}';
 
-        function slider(index) {
-          imgContainer.style.left = "-" + index * 100 + "%"
-          const dotActive = document.querySelector('.active')
-          dotActive.classList.remove("active")
-          dotItem[index].classList.add("active")
+        fetch(url + '?prod_id=' + prodId, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(() => {
+            if (icon.classList.contains('fas')) {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+            } else {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+            }
+        });
+    });
+});
+</script>
 
-        }
-        setInterval(imgSlide, 3000)
-
-      </script>      
 {% endblock content %}

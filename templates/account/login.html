@@ -1,56 +1,102 @@
 {% extends 'base.html' %}
 {% load static %}
 
-    {% block content %}
-
-      <div class="container py-5">
-        <div class="col-md-8 offset-2">
-
-        <h1 class="mb-5">Đăng nhập tài khoản</h1>
-        
-        
-        <div class="card mb-4" id="forms">
-          
-          <div class="card-body">
-              
-            {% include 'partials/_messages.html' %}
-
-            <form method="post" action="">
-              <fieldset>
-                {% csrf_token %}
-
-                {% for fm in form %}
-                    <div class="form-group">
-                        {{fm.label_tag}}
-                        {{fm}}
-                        <small class="text-danger">{{fm.errors|striptags}}</small>
-                    </div>
-                {% endfor %}
-                <button class="btn btn-primary" type="submit">Đăng nhập</button>
-              </fieldset>
-
-              {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <p class="alert alert-danger my-3">
-                        {{error}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </p>
-                {% endfor %}
-              {% endif %}
-
-
-            </form>
-
-            <hr>
-
-            Quên mật khẩu? <a href="{% url 'store:password-reset' %}">Đặt lại mật khẩu</a> <br>
-            Thành viên mới? <a href="{% url 'store:register' %}">Tạo một tài khoản</a> 
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="text-center mb-4">
+                <h1 class="h3 text-uppercase fw-bold">Đăng nhập</h1>
+                <p class="text-muted small">Chào mừng bạn quay lại với ABUFISH</p>
+            </div>
             
-          </div>
-        </div>
+            <div class="card shadow-sm border-0" id="forms" style="border-radius: 20px !important;">
+                <div class="card-body p-4 p-lg-5">
+                    
+                    {% include 'partials/_messages.html' %}
 
-        </div>       
-      </div>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <fieldset class="border-0 p-0">
+                            
+                            {% for fm in form %}
+                                <div class="form-group mb-4">
+                                    <label class="form-label small text-uppercase fw-bold text-muted">{{ fm.label_tag }}</label>
+                                    {{ fm }}
+                                    {% if fm.errors %}
+                                        <small class="text-danger mt-1 d-block">{{ fm.errors|striptags }}</small>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-dark btn-lg shadow-sm py-2" type="submit" style="background-color: #212529; border: none;">
+                                    Đăng nhập
+                                </button>
+                            </div>
+
+                        </fieldset>
+
+                        {% if form.non_field_errors %}
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger alert-dismissible fade show my-3 py-2 small" role="alert" style="border-radius: 10px;">
+                                    {{ error }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </form>
+
+                    <div class="mt-4 pt-3 border-top text-center small">
+                        <p class="mb-1 text-muted">Quên mật khẩu? 
+                            <a href="{% url 'store:password-reset' %}" class="text-primary fw-bold text-decoration-none">Đặt lại ngay</a>
+                        </p>
+                        <p class="mb-0 text-muted">Thành viên mới? 
+                            <a href="{% url 'store:register' %}" class="text-primary fw-bold text-decoration-none">Tạo tài khoản</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+   
+    #forms input[type="text"], 
+    #forms input[type="password"], 
+    #forms input[type="email"] {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #f8f9fa;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 10px !important; 
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    #forms input:focus {
+        background-color: #fff;
+        border-color: #dcb14a; 
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(220, 177, 74, 0.25);
+    }
+
+    .form-label label {
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+
+    #forms {
+        transition: transform 0.3s ease;
+    }
+    #forms:hover {
+        transform: translateY(-5px);
+    }
+</style>
 {% endblock content %}

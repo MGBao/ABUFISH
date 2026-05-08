@@ -6,37 +6,43 @@ from .views import SearchView
 
 app_name = 'store'
 
-
 urlpatterns = [
+    # TRANG CHỦ & TÌM KIẾM 
     path('', views.home, name="home"),
     path('search/', SearchView.as_view(), name='search'),
-    # URL for Cart and Checkout
+    path('introduce/', views.introduce, name="introduce"),
+    path('shop/', views.shop, name="shop"),
+    path('product/test/', views.test, name="test"),
+
+    # GIỎ HÀNG & THANH TOÁN 
+    path('cart/', views.cart, name="cart"),
     path('add-to-cart/', views.add_to_cart, name="add-to-cart"),
     path('remove-cart/<int:cart_id>/', views.remove_cart, name="remove-cart"),
     path('plus-cart/<int:cart_id>/', views.plus_cart, name="plus-cart"),
     path('minus-cart/<int:cart_id>/', views.minus_cart, name="minus-cart"),
-    path('add-notifi-like-home/', views.add_notifi_like_home, name="add-notifi-like-home"),
-    path('add-notifi-like-cp/', views.add_notifi_like_cp, name="add-notifi-like-cp"),
-    path('add-notifi-like-p/', views.add_notifi_like_p, name="add-notifi-like-p"),
-    path('add-notifi-like-rp/', views.add_notifi_like_rp, name="add-notifi-like-rp"),
-    path('introduce/', views.introduce, name="introduce"),
-    path('cart/', views.cart, name="cart"),
     path('checkout/', views.checkout, name="checkout"),
     path('checkout-test/', views.checkout_test, name="checkout-test"),
+
+    # ĐƠN HÀNG & HÓA ĐƠN 
     path('orders/', views.orders, name="orders"),
     path('billing/', views.billing, name="billing"),
     path('purchase-orders/', views.purchase_orders, name="purchase-orders"),
     path('invoice/', views.invoice, name="invoice"),
+
+    # SẢN PHẨM & DANH MỤC
+    path('categories/', views.all_categories, name="all-categories"),
+    path('product/<slug:slug>/', views.detail, name="product-detail"),
+    
+
+    # YÊU THÍCH & THÔNG BÁO
     path('like-products/', views.like_products, name="like-products"),
     path('remove-like/<int:favorite_id>/', views.remove_like, name="remove-like"),
-    #URL for Products
-    path('product/<slug:slug>/', views.detail, name="product-detail"),
-    path('categories/', views.all_categories, name="all-categories"),
-    path('<slug:slug>/', views.category_products, name="category-products"),
+    path('add-notifi-like-home/', views.add_notifi_like_home, name="add-notifi-like-home"),
+    path('add-notifi-like-cp/', views.add_notifi_like_cp, name="add-notifi-like-cp"),
+    path('add-notifi-like-p/', views.add_notifi_like_p, name="add-notifi-like-p"),
+    path('add-notifi-like-rp/', views.add_notifi_like_rp, name="add-notifi-like-rp"),
 
-    path('shop/', views.shop, name="shop"),
-
-    # URL for Authentication
+    # TÀI KHOẢN 
     path('accounts/register/', views.RegistrationView.as_view(), name="register"),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='account/login.html', authentication_form=LoginForm), name="login"),
     path('accounts/profile/', views.profile, name="profile"),
@@ -44,15 +50,16 @@ urlpatterns = [
     path('accounts/remove-address/<int:id>/', views.remove_address, name="remove-address"),
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='store:login'), name="logout"),
 
+    # QUẢN LÝ MẬT KHẨU
     path('accounts/password-change/', auth_views.PasswordChangeView.as_view(template_name='account/password_change.html', form_class=PasswordChangeForm, success_url='/accounts/password-change-done/'), name="password-change"),
     path('accounts/password-change-done/', auth_views.PasswordChangeDoneView.as_view(template_name='account/password_change_done.html'), name="password-change-done"),
-
-    path('accounts/password-reset/', auth_views.PasswordResetView.as_view(template_name='account/password_reset.html', form_class=PasswordResetForm, success_url='/accounts/password-reset/done/'), name="password-reset"), # Passing Success URL to Override default URL, also created password_reset_email.html due to error from our app_name in URL
+    path('accounts/password-reset/', auth_views.PasswordResetView.as_view(template_name='account/password_reset.html', form_class=PasswordResetForm, success_url='/accounts/password-reset/done/'), name="password-reset"),
     path('accounts/password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='account/password_reset_done.html'), name="password_reset_done"),
-    path('accounts/password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='account/password_reset_confirm.html', form_class=SetPasswordForm, success_url='/accounts/password-reset-complete/'), name="password_reset_confirm"), # Passing Success URL to Override default URL
+    path('accounts/password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='account/password_reset_confirm.html', form_class=SetPasswordForm, success_url='/accounts/password-reset-complete/'), name="password_reset_confirm"),
     path('accounts/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='account/password_reset_complete.html'), name="password_reset_complete"),
 
-    path('product/test/', views.test, name="test"),
-
-    
+    # HỆ THỐNG CHATBOX 
+  path('send-message/', views.send_message, name="send-message"),
+  path('get-messages/', views.get_messages, name="get-messages"),
+  path('<slug:slug>/', views.category_products, name="category-products"),
 ]

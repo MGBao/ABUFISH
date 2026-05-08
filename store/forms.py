@@ -9,7 +9,21 @@ from django.forms import widgets
 from django.forms.fields import CharField
 from django.utils.translation import gettext, gettext_lazy as _
 from . models import Product, Comment,Profile, ProductReview
+from django import forms
+from .models import Profile
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['phone', 'profile_pic'] 
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+           
+            field.widget.attrs['class'] = 'form-control'
+            
+            field.widget.attrs['placeholder'] = f'Nhập {field.label.lower()}...'
 
 class RegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Mật khẩu', widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Nhập mật khẩu'}))
@@ -32,7 +46,7 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = ['locality', 'city', 'state']
-        widgets = {'locality':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Ngõ 69B, đường 169 Nguyễn Trãi, Thanh Xuân'}), 'city':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Quận/Huyện'}), 'state':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Thành Phố/Tỉnh'})}
+        widgets = {'locality':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Địa chỉ'}), 'city':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Quận/Huyện'}), 'state':forms.TextInput(attrs={'class':'form-control', 'placeholder':'Thành Phố/Tỉnh'})}
 
 
 class PasswordChangeForm(PasswordChangeForm):

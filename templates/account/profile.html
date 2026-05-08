@@ -1,154 +1,220 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 <style>
-  .profile-pic {
-    max-width: 150px;
-    max-height: 150px;
-    margin: 10 auto;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    background-size:cover;
-    background-repeat:no-repeat;
-}
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .card-custom {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .btn-pill {
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-weight: 600;
+    }
+    .profile-form .form-group { margin-bottom: 1.5rem; }
+    .profile-form label { font-weight: 600; color: #495057; margin-bottom: 0.5rem; font-size: 0.9rem; display: block; }
+    .profile-form input[type="text"], .profile-form input[type="tel"], .profile-form input[type="email"], .profile-form input[type="file"] {
+        width: 100%; padding: 12px 15px; border: 1px solid #e0e0e0; border-radius: 12px; transition: all 0.3s ease; background-color: #fff;
+    }
+    .profile-form input:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.1); outline: none; }
+    .profile-form input[type="file"] { background-color: #f8f9fa; padding: 8px; }
+    .profile-form .helptext { display: block; font-size: 0.8rem; color: #6c757d; margin-top: 5px; }
+    .address-scroll::-webkit-scrollbar { width: 5px; }
+    .address-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+    .address-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
 </style>
+
 <div class="container py-5">
-  {% include 'partials/_messages.html' %}
+    {% include 'partials/_messages.html' %}
 
-  <div class="jumbotron">
-    
-    <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
-    <p><strong>Tên tài khoản:</strong> {{request.user.username}}</p>
-    <p><strong>Email:</strong> {{request.user.email}}</p>
+    <div class="card card-custom mb-4 bg-white">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center text-md-start">
+                    {% if request.user.profile.profile_pic %}
+                        <img class="profile-pic mb-3 mb-md-0" src="{{request.user.profile.profile_pic.url}}" alt="Avatar">
+                    {% else %}
+                        <img class="profile-pic mb-3 mb-md-0" src="{% static 'img/default-avatar.png' %}" alt="Avatar">
+                    {% endif %}
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    <h2 class="fw-bold mb-1">{{request.user.first_name}} {{request.user.last_name}}</h2>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-user me-2 text-primary"></i>@{{request.user.username}} 
+                        <span class="mx-2 text-light">|</span> 
+                        <i class="fas fa-envelope me-2 text-primary"></i>{{request.user.email}}
+                    </p>
+                    <div class="d-inline-block mt-2">
+                        <input class="d-none" type="checkbox" id="alternateAddressCheckbox">
+                        <label class="small fw-bold text-primary" for="alternateAddressCheckbox" style="cursor:pointer">
+                            Chỉnh sửa hồ sơ <i class="fas fa-edit ms-2"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
+                    <a class="btn btn-primary btn-pill me-2 mb-2 mb-md-0" href="{% url 'store:add-address' %}">
+                        <i class="fas fa-map-marker-alt me-2"></i> Thêm địa chỉ
+                    </a>
+                    <a class="btn btn-outline-dark btn-pill" href="{% url 'store:orders' %}">
+                        <i class="fas fa-box me-2"></i> Đơn hàng
+                    </a>
+                </div>
+            </div>
 
-    <img style="margin-bottom: 10px; margin-left: 20px;" class="profile-pic" src="{{request.user.profile.profile_pic.url}}">
-    
-    <div class="form-group">
-      <div class="custom-control custom-checkbox">
-        <input class="custom-control-input" id="alternateAddressCheckbox" type="checkbox">
-        <label class="custom-control-label text-small" for="alternateAddressCheckbox">Sửa thông tin cá nhân</label>
-      </div>
-    </div>
-    <div class="col-lg-12" style="margin-bottom: 20px;">
-      <div class="row d-none" id="alternateAddress">
-        <div class="col-md-9">
-          <div class="card card-body">
-        
-            <form method="POST" action="" enctype="multipart/form-data">
-              {% csrf_token %}
-              {{form.as_p}}
-              <button type="submit" name="Update Information"
-                class="btn btn-primary">Xác nhận</button>
-            </form>
-          </div>
-      </div>
-    </div>
-    
-    
-    
-    </div>
-    <p><a class="btn btn-primary btn-large" href="{% url 'store:add-address' %}">Thêm địa chỉ »</a> <a
-        class="btn btn-outline-primary btn-large" href="{% url 'store:orders' %}">Đơn hàng của bạn »</a></p>
-  </div>
-
-
-  <div class="row">
-
-    <div class="col-lg-6">
-      <div class="card mb-4" id="headings">
-        <div class="card-header">Địa chỉ <span class="float-right"><a href="{% url 'store:add-address' %}">Thêm địa
-              chỉ</a></span></div>
-        <div class="card-body">
-          {% if addresses %}
-          {% for address in addresses %}
-          <h4 class="mb-3">Địa chỉ {{forloop.counter}}</h4>
-
-          <span class="float-right"><a href="{% url 'store:remove-address' address.id %}"><i
-                class="fas fa-trash-alt small text-muted"></i></a></span>
-
-          <p>
-            <strong>Địa chỉ cụ thể: </strong>{{address.locality}} <br>
-            <strong>Huyện/Thành Phố: </strong>{{address.city}} <br>
-            <strong>Tỉnh: </strong>{{address.state}} <br>
-          </p>
-
-          <hr>
-          {% endfor %}
-          {% else %}
-          <div class="text-danger">
-            Địa chỉ chưa được thêm.
-          </div>
-          {% endif %}
-
+            <div class="row d-none mt-4" id="alternateAddress">
+                <div class="col-lg-12">
+                    <div class="p-4 bg-light" style="border-radius: 15px;">
+                        <h5 class="mb-4 fw-bold"><i class="fas fa-user-cog me-2"></i>Cập nhật thông tin</h5>
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="fw-bold text-muted small mb-1">
+                                        <i class="fas fa-phone me-1"></i> Số điện thoại
+                                    </label>
+                                    <input type="tel" name="phone" 
+                                        value="{{ request.user.profile.phone }}"
+                                        class="form-control rounded-3 border-0 shadow-sm py-2 px-3"
+                                        placeholder="Nhập số điện thoại...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="fw-bold text-muted small mb-1">
+                                        <i class="fas fa-camera me-1"></i> Ảnh đại diện
+                                    </label>
+                                    <label class="d-block w-100 rounded-3 shadow-sm py-2 px-3 text-center" 
+                                        style="border: 2px dashed #dee2e6; cursor:pointer; background:#fff; color:#6c757d;">
+                                        <i class="fas fa-upload me-2"></i> Chọn ảnh mới
+                                        <input type="file" name="profile_pic" accept="image/*" class="d-none" 
+                                            onchange="this.parentElement.querySelector('span').innerText = this.files[0].name">
+                                        <span class="d-block small mt-1 text-muted">Chưa chọn file</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-pill mt-3 px-4">
+                                <i class="fas fa-check me-2"></i> Lưu thay đổi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <div class="col-lg-6">
-      <div class="card mb-4" id="tables">
-        <div class="card-header">Đơn hàng</div>
-        <div class="card-body">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Sản phẩm </th>
-                <th>Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if orders %}
-              {% for order in orders %}
-              <tr>
-                <td>{{forloop.counter}}</td>
-                <td>{{order.product.title}}</td>
-                <td>
-                  {% if order.status == 'Pending' %}                  
-                  Đang xử lý
-                  {% endif %}
-                  
-                  {% if order.status == 'Accepted' %}                  
-                  Đã xác nhận
-                  {% endif %}
-                  
-                  {% if order.status == 'Packed' %}                 
-                  Đã đóng gói
-                  {% endif %}
-                  
-                  
-                  {% if order.status == 'On The Way' %}                 
-                  Đã vận chuyển
-                  {% endif %}
-                  
-                  {% if order.status == 'Delivered' %}                  
-                  Đã giao hàng
-                  {% endif %}
-                  
-                  {% if order.status == 'Cancelled' %}                  
-                  Đã huỷ
-                  {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-              {% else %}
-              <tr>
-                <td class="text-danger" colspan="3">Bạn chưa đặt hàng bất cứ đơn hàng nào.</td>
-              </tr>
-              {% endif %}
-
-
-            </tbody>
-          </table>
-
+    <div class="row">
+        <div class="col-lg-5 mb-4">
+            <div class="card card-custom h-100">
+                <div class="card-header bg-white py-3 ps-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-map-marked-alt me-2 text-primary"></i> Địa chỉ của bạn</h5>
+                    <a href="{% url 'store:add-address' %}" class="small text-decoration-none fw-bold text-success">+ Thêm mới</a>
+                </div>
+                <div class="card-body p-4">
+                    {% if addresses %}
+                        <div class="address-scroll" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
+                            {% for address in addresses %}
+                            <div class="address-item mb-3 p-3 border rounded shadow-sm bg-white">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-primary mb-0">
+                                        <i class="fas fa-map-pin me-2"></i> Địa chỉ {{forloop.counter}}
+                                    </h6>
+                                    <a href="{% url 'store:remove-address' address.id %}" class="text-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                                <p class="mb-0 small text-muted">
+                                    <span class="d-block mb-1"><strong>Cụ thể:</strong> {{address.locality}}</span>
+                                    <span class="d-block mb-1"><strong>Thành phố:</strong> {{address.city}}</span>
+                                    <span class="d-block"><strong>Tỉnh:</strong> {{address.state}}</span>
+                                </p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-map-pin fa-3x text-light mb-3"></i>
+                            <p class="text-muted">Chưa có địa chỉ nào được thêm.</p>
+                            <a href="{% url 'store:add-address' %}" class="btn btn-sm btn-outline-primary rounded-pill">Thêm ngay</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="col-lg-7 mb-4">
+            <div class="card card-custom h-100">
+                <div class="card-header bg-white py-3 ps-4">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-history me-2 text-primary"></i> Đơn hàng gần đây</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light text-secondary">
+                                <tr class="small text-uppercase">
+                                    <th class="ps-4 py-3 border-0">Sản phẩm</th>
+                                    <th class="border-0">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if orders %}
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td class="align-middle ps-4 py-3">
+                                            <span class="fw-bold text-dark">{{order.product.title}}</span>
+                                        </td>
+                                        <td class="align-middle py-3">
+                                            {% with status=order.status %}
+                                                {% if status == 'Accepted' %}<span class="badge rounded-pill bg-info"><i class="fas fa-check-circle me-1"></i> Đã xác nhận</span>
+                                                {% elif status == 'Packed' %}<span class="badge rounded-pill bg-warning text-dark"><i class="fas fa-box-open me-1"></i> Đã đóng gói</span>
+                                                {% elif status == 'On The Way' %}<span class="badge rounded-pill bg-primary"><i class="fas fa-shipping-fast me-1"></i> Đang giao</span>
+                                                {% elif status == 'Delivered' %}<span class="badge rounded-pill bg-success"><i class="fas fa-home me-1"></i> Thành công</span>
+                                                {% elif status == 'Cancelled' %}<span class="badge rounded-pill bg-danger"><i class="fas fa-times-circle me-1"></i> Đã huỷ</span>
+                                                {% else %}<span class="badge rounded-pill bg-secondary"><i class="fas fa-spinner fa-spin me-1"></i> Đang xử lý</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-center py-5 text-muted">
+                                            <i class="fas fa-shopping-basket fa-2x mb-3 d-block opacity-25"></i>
+                                            Bạn chưa có đơn hàng nào.
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 text-center py-3">
+                    <a href="{% url 'store:orders' %}" class="small fw-bold text-decoration-none">
+                        Xem tất cả đơn hàng <i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-
-  </div>
-
-
-
 </div>
+
+<script>
+    document.querySelector('label[for="alternateAddressCheckbox"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        var formDiv = document.getElementById('alternateAddress');
+        if (formDiv.classList.contains('d-none')) {
+            formDiv.classList.remove('d-none');
+        } else {
+            formDiv.classList.add('d-none');
+        }
+    });
+</script>
 {% endblock content %}

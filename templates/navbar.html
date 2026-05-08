@@ -6,17 +6,17 @@
   <div class="container px-0 px-lg-0">
     
     <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0">
-      <a href="{% url 'store:introduce' %}" class="nav-link active text-white">
-      <span class="font-weight-bold text-white" style="font-size: 30px; margin-right: 20px;">Tiki</span></a>
+      <a href="{% url 'store:home' %}" class="nav-link active text-white">
+      <span class="font-weight-bold text-white" style="font-size: 30px; margin-right: 20px;">ABUFISH</span></a>
       <a
         class="navbar-brand"
         >
         <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'store:search' %}" >
-          <input class="form-control mr-sm-2" action="" style="width: 410px;font-size: 13.5px" method="GET" type="text"
+          <input class="form-control mr-sm-2" action="" style="width: 250px;font-size: 13.5px" method="GET" type="text"
             placeholder="Tìm kiếm ..." aria-label="Search" name="query" value="{{ request.GET.query }}">
           <button class="btn" style="color: white;border-color: white;font-size: 13.5px ; " type="submit"><i class="fa fa-search" ></i> Tìm kiếm</button>
         </form>
-        <!-- <span class="font-weight-bold text-white">Tiki</span></a> -->
+        <!-- <span class="font-weight-bold text-white">ABUFISH</span></a> -->
       <button class="navbar-toggler navbar-toggler-right" type="button"
         data-toggle="collapse"
         data-target="#navbarSupportedContent"
@@ -53,7 +53,7 @@
                 <i class="far fa-bell mr-1"> </i>Thông báo
             </a>
               
-            <div class="dropdown-menu mt-3"  style="position: absolute;" aria-labelledby="pagesDropdown" >
+            <div class="dropdown-menu mt-3" style="position: absolute; border-radius: 12px; overflow-y: auto; max-height: 300px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);" aria-labelledby="pagesDropdown">
               <a class="dropdown-item border-0 transition-link" href="#">Thông báo</a>
               <hr>             
 
@@ -95,7 +95,7 @@
             <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
 
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Tài khoản</a>
-              <a class="dropdown-item border-0 transition-link" href="{% url 'store:like-products' %}">Sản phẩm ưu thích</a>
+              <a class="dropdown-item border-0 transition-link" href="{% url 'store:like-products' %}">Sản phẩm yêu thích</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Giỏ hàng</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:orders' %}">Đơn hàng</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:invoice' %}">Hoá đơn</a>
@@ -103,8 +103,14 @@
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Đổi mật khẩu</a>
 
               <hr>
-              <a class="dropdown-item border-0 transition-link" href="{% url 'store:logout' %}">Đăng xuất</a>
+             <form action="{% url 'store:logout' %}" method="post" id="logout-form" style="display: none;">
+    {% csrf_token %}
+</form>
 
+<a class="dropdown-item border-0 transition-link" href="javascript:void(0)" 
+   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+   Đăng xuất
+</a>
             </li>
             {% else %}
             <li class="nav-item"><a class="nav-link text-white" style="font-size: 15px;" href="{% url 'store:login' %}">Đăng nhập</a></li>

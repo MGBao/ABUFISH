@@ -2,107 +2,89 @@
 {% load static %}
 {% load humanize %}
 
-    {% block content %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4 shadow-sm" id="tables" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-header text-center fw-bold bg-white py-3">ĐƠN HÀNG CỦA BẠN</div>
+                <div class="card-body p-0"> <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4"></th>
+                                <th>Sản phẩm</th>
+                                <th>Hình ảnh</th>
+                                <th class="text-center">Số lượng</th> 
+                                <th>Thời gian đặt</th>
+                                <th style="width: 250px;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                    <tr>
+                                        <td class="align-middle ps-4">{{forloop.counter}}</td>
 
-      <div class="container py-5">
+                                        <td class="align-middle">
+                                            <a href="{% url 'store:product-detail' order.product.slug %}" class="text-decoration-none fw-bold text-dark">
+                                                {{order.product.title}}
+                                            </a>
+                                        </td>
 
+                                        <td class="align-middle">
+                                            {% if order.product.product_image %}
+                                                <a href="{% url 'store:product-detail' order.product.slug %}">
+                                                    <img src="{{order.product.product_image.url}}" alt="{{order.product.product_title}}" 
+                                                         style="width:80px; height:80px; object-fit:cover; border-radius:12px; border: 1px solid #eee;">
+                                                </a>
+                                            {% endif %}
+                                        </td>
 
-        <div class="row">
+                                        <td class="align-middle text-center">{{order.quantity}}</td>
 
-          
+                                        <td class="align-middle text-muted">{{order.ordered_date|date:"d/m/Y H:i"}}</td>
 
-          <div class="col-lg-12">
-            <div class="card mb-4" id="tables">
-              <div class="card-header text-center">Đơn hàng</div>
-              <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Sản phẩm</th>
-                      <th>Hình ảnh</th>
-                      <th>Qty.</th> 
-                      <th>Thời gian đặt</th>
-                      <th>Trạng thái</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-
-                    {% if orders %}
-
-                      {% for order in orders %}
-                        <tr>
-                          <td>{{forloop.counter}}</td>
-                          <td><a href="{% url 'store:product-detail' order.product.slug %}">{{order.product.title}}</a></td>
-                          <td>
-                            {% if order.product.product_image %}
-                            <a href="{% url 'store:product-detail' order.product.slug %}">
-                              <img src="{{order.product.product_image.url}}" alt="{{order.product.product_title}}" style="width:150px;">
-                            </a>
-                              {% endif %}
-                          
-                          </td>
-                          <td>{{order.quantity}}</td>
-                          <td>{{order.ordered_date|naturaltime}}</td>
-                          <td>
-
-                            {% if order.status == 'Pending' %}
-                            
-                            Đang xử lý
+                                        <td class="align-middle pe-4">
+                                            {% with status=order.status %}
+                                                <div class="progress mb-2" style="height: 8px; border-radius: 50px; background-color: #f0f0f0;">
+                                                    {% if status == 'Accepted' %}
+                                                        <div class="progress-bar bg-info" style="width: 25%; border-radius: 50px;"></div>
+                                                    {% elif status == 'Packed' %}
+                                                        <div class="progress-bar bg-warning" style="width: 50%; border-radius: 50px;"></div>
+                                                    {% elif status == 'On The Way' %}
+                                                        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="width: 75%; border-radius: 50px;"></div>
+                                                    {% elif status == 'Delivered' %}
+                                                        <div class="progress-bar bg-success" style="width: 100%; border-radius: 50px;"></div>
+                                                    {% elif status == 'Cancelled' %}
+                                                        <div class="progress-bar bg-danger" style="width: 100%; border-radius: 50px;"></div>
+                                                    {% else %}
+                                                        <div class="progress-bar bg-secondary" style="width: 10%; border-radius: 50px;"></div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="small fw-bold">
+                                                    {% if status == 'Accepted' %}<span class="text-info">Đã xác nhận</span>
+                                                    {% elif status == 'Packed' %}<span class="text-warning">Đã đóng gói</span>
+                                                    {% elif status == 'On The Way' %}<span class="text-primary">Đang giao hàng</span>
+                                                    {% elif status == 'Delivered' %}<span class="text-success">Giao thành công</span>
+                                                    {% elif status == 'Cancelled' %}<span class="text-danger">Đã hủy đơn</span>
+                                                    {% else %}<span class="text-secondary">Đang chờ xử lý</span>
+                                                    {% endif %}
+                                                </div>
+                                            {% endwith %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">Bạn chưa có đơn hàng nào.</td>
+                                </tr>
                             {% endif %}
-
-                            {% if order.status == 'Accepted' %}
-                            <div class="bg-light border border-primary">
-                                <div class="p-3 bg-primary" style="width:0;"></div>
-                            </div>
-                            Đã xác nhận
-                            {% endif %}
-
-                            {% if order.status == 'Packed' %}
-                            <div class="bg-light border border-primary">
-                                <div class="p-3 bg-primary" style="width:40%;"></div>
-                            </div>
-                            Đã đóng gói
-                            {% endif %}
-                            
-                            
-                            {% if order.status == 'On The Way' %}
-                            <div class="bg-light border border-primary">
-                                <div class="p-3 bg-primary" style="width:70%;"></div>
-                            </div>
-                            Đã vận chuyển
-                            {% endif %}
-                            
-                            {% if order.status == 'Delivered' %}
-                            <div class="bg-light border border-primary">
-                                <div class="p-3 bg-primary" style="width:100%;"></div>
-                            </div>
-                            Đã giao hàng
-                            {% endif %}
-
-                            {% if order.status == 'Cancelled' %}
-                            <div class="bg-light border border-danger">
-                                <div class="p-3 bg-danger" style="width:100%;"></div>
-                            </div>
-                            Đã huỷ
-                            {% endif %}
-                            
-                            <!-- {{order.status}} -->
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    {% endif %}
-                    
-                  </tbody>
-                </table>
-                
-              </div>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
-          
         </div>
-    
-        
-        
-      </div>
+    </div>
+</div>
 {% endblock content %}

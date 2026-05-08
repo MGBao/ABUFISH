@@ -1,56 +1,110 @@
 {% extends 'base.html' %}
 {% load static %}
 
-    {% block content %}
-
-      <div class="container py-5">
-        <div class="col-md-8 offset-2">
-
-        <h1 class="mb-5">Tạo tài khoản</h1>
-        
-        
-        <div class="card mb-4" id="forms">
-          <div class="card-header">
-            <small>
-            Với tài khoản này, bạn có thể tiết kiệm thời gian trong quá trình thanh toán, truy cập vào túi mua hàng của bạn từ bất
-            kỳ thiết bị nào và xem lịch sử đơn hàng của bạn.
-            </small>
-          </div>
-          <div class="card-body">
-
-            {% include 'partials/_messages.html' %}
-
-            <form method="post" action="">
-              <fieldset>
-                {% csrf_token %}
-
-                {% for fm in form %}
-                    <div class="form-group">
-                        {{fm.label_tag}}
-                        {{fm}}
-                        <small class="text-danger">{{fm.errors|striptags}}</small>
-                    </div>
-                {% endfor %}
-                <button class="btn btn-primary" type="submit">Xác nhận</button>
-              </fieldset>
-
-              {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <p class="alert alert-danger alert-dismissible fade show" role="alert" my-3">
-                        {{error}}
-                    </p>
-                {% endfor %}
-              {% endif %}
-
-            </form>
-
-            <hr>
-
-            Bạn có sẵn tài khoản? <a href="{% url 'store:login' %}">Đăng nhập </a>
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-9">
             
-          </div>
-        </div>
+            <div class="text-center mb-4">
+                <h1 class="h3 text-uppercase fw-bold">Tạo tài khoản mới</h1>
+                <p class="text-muted small px-lg-5">
+                    Tham gia cùng <strong>ABUFISH</strong> để quản lý đơn hàng và nhận nhiều ưu đãi hấp dẫn dành riêng cho thành viên.
+                </p>
+            </div>
+            
+            <div class="card shadow-sm border-0" id="forms" style="border-radius: 20px !important;">
+                <div class="card-header bg-light border-0 py-3 text-center" style="border-radius: 20px 20px 0 0 !important;">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i> 
+                        Tiết kiệm thời gian thanh toán và xem lịch sử đơn hàng dễ dàng.
+                    </small>
+                </div>
 
-        </div>       
-      </div>
+                <div class="card-body p-4 p-lg-5">
+                    {% include 'partials/_messages.html' %}
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <fieldset class="border-0 p-0">
+                            
+                            {% for fm in form %}
+                                <div class="form-group mb-3">
+                                    <label class="form-label small text-uppercase fw-bold text-muted">{{ fm.label_tag }}</label>
+                                    {{ fm }}
+                                    {% if fm.errors %}
+                                        <small class="text-danger mt-1 d-block">{{ fm.errors|striptags }}</small>
+                                    {% endif %}
+                                    {% if fm.help_text %}
+                                        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">{{ fm.help_text|safe }}</small>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-dark btn-lg shadow-sm py-2" type="submit" style="background-color: #212529; border: none;">
+                                    Xác nhận đăng ký
+                                </button>
+                            </div>
+
+                        </fieldset>
+
+                        {% if form.non_field_errors %}
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger alert-dismissible fade show my-3 py-2 small" role="alert" style="border-radius: 10px;">
+                                    {{ error }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </form>
+
+                    <div class="mt-4 pt-3 border-top text-center small">
+                        <p class="mb-0 text-muted">Bạn đã có sẵn tài khoản? 
+                            <a href="{% url 'store:login' %}" class="text-primary fw-bold text-decoration-none">Đăng nhập ngay</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #forms input {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+        color: #495057;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 10px !important;
+        transition: all 0.2s ease-in-out;
+    }
+
+    #forms input:focus {
+        background-color: #fff;
+        border-color: #dcb14a;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(220, 177, 74, 0.15);
+    }
+
+    /* Hiệu ứng hover cho Card */
+    #forms {
+        transition: transform 0.3s ease;
+    }
+    #forms:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Chỉnh lại khoảng cách help text của Django nếu có */
+    .form-group ul {
+        list-style: none;
+        padding-left: 0;
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+</style>
 {% endblock content %}

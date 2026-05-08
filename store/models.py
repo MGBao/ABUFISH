@@ -1,9 +1,24 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from annoying.fields import AutoOneToOneField
 from django.conf import settings
 
-# Create your models here.
+class ChatMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chats', verbose_name="Khách hàng")
+    message = models.TextField(verbose_name="Nội dung tin nhắn")
+    is_admin_reply = models.BooleanField(default=False, verbose_name="Admin trả lời?")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Thời gian nhắn")
+
+    class Meta:
+        verbose_name = "Tin nhắn hỗ trợ"
+        verbose_name_plural = "Tin nhắn hỗ trợ"
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Chat với {self.user.username}"
+
 class Address(models.Model):
     user = models.ForeignKey(User, verbose_name="Tên người dùng", on_delete=models.CASCADE)
     locality = models.CharField(max_length=150, verbose_name="Địa chỉ cụ thể")
@@ -89,7 +104,7 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.user)
     
-    # Creating Model Property to calculate Quantity x Price
+    # 
     @property
     def total_price(self):
         return self.quantity * self.product.price
@@ -117,11 +132,11 @@ class Order(models.Model):
         default="Pending"
         )
 RATING=(
-    (1,'1'),
-    (2,'2'),
-    (3,'3'),
-    (4,'4'),
-    (5,'5'),
+    ('1','1'),
+    ('2','2'),
+    ('3','3'),
+    ('4','4'),
+    ('5','5'),
 )
 class ProductReview(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -167,8 +182,23 @@ class Voucher(models.Model):
 class UserVoucher(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     voucher=models.ForeignKey(Voucher,on_delete=models.CASCADE)
-    count  = models.IntegerField() # 1 voucher 1 user chỉ dùng được 3 lần là max
+    count  = models.IntegerField() # 1 voucher 1 user chỉ dùng được 3 lần 
 class Lastseen_Product(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Thời gian xem")
+
+    from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Voucher)
+def send_voucher_notification(sender, instance, created, **kwargs):
+    if created:
+        users = User.objects.filter(is_active=True)
+        for user in users:
+            Notification.objects.create(
+                user=user,
+                content=f"Bạn vừa được tặng một voucher : {instance.code}! Sự dụng ngay nhé !",
+                type=0,
+                slug=''
+            )

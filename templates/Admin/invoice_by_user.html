@@ -1,0 +1,103 @@
+{% extends "admin/base_site.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">Hóa đơn theo khách hàng</h2>
+
+{% for item in data %}
+<div style="border-radius:8px;margin-bottom:12px;border:1px solid var(--border-color);overflow:hidden;">
+
+    <div onclick="toggle('inv-{{ forloop.counter }}')"
+         style="background:var(--darkened-bg);padding:12px 20px;display:flex;align-items:center;
+                justify-content:space-between;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:10px;">
+           
+            <strong style="font-size:14px;">{{ item.user.username }}</strong>
+            <span style="font-size:12px;opacity:0.6;">{{ item.invoices.count }} hóa đơn</span>
+        </div>
+        <span id="icon-{{ forloop.counter }}" style="font-size:12px;opacity:0.6;">▶</span>
+    </div>
+
+    <div id="inv-{{ forloop.counter }}" style="display:none;">
+        {% for invoice in item.invoices %}
+        <div style="border-top:1px solid var(--border-color);">
+
+            <div onclick="toggle('detail-{{ invoice.id }}')"
+                 style="padding:10px 20px;display:flex;align-items:center;
+                        justify-content:space-between;cursor:pointer;background:var(--darkened-bg);">
+                <div style="display:flex;gap:20px;align-items:center;">
+                    <span style="font-size:13px;opacity:0.6;">{{ invoice.ordered_date|date:"d/m/Y H:i" }}</span>
+                    <span style="font-weight:600;color:#c62828;font-size:13px;">
+                        {{ invoice.price|floatformat:0|intcomma }}đ
+                    </span>
+                    <span style="font-size:12px;opacity:0.6;">{{ invoice.order.count }} sản phẩm</span>
+                </div>
+                <span id="icon-detail-{{ invoice.id }}" style="font-size:11px;opacity:0.5;">▶ Xem chi tiết</span>
+            </div>
+
+            <div id="detail-{{ invoice.id }}" style="display:none;padding:0 20px 12px;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
+                    <thead>
+                        <tr style="text-align:left;opacity:0.6;">
+                            <th style="padding:6px 0;">Sản phẩm</th>
+                            <th style="padding:6px 0;text-align:center;">Số lượng</th>
+                            <th style="padding:6px 0;text-align:center;">Trạng thái</th>
+                            <th style="padding:6px 0;text-align:right;">Đơn giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in invoice.order.all %}
+                        <tr style="border-top:1px solid var(--border-color);">
+                            <td style="padding:8px 0;font-weight:500;">{{ order.product.title }}</td>
+                            <td style="padding:8px 0;text-align:center;">x{{ order.quantity }}</td>
+                            <td style="padding:8px 0;text-align:center;">
+                                {% if order.status == 'Delivered' %}
+                                    <span style="color:#2e7d32;font-size:12px;">✅ Đã giao</span>
+                                {% elif order.status == 'Cancelled' %}
+                                    <span style="color:#c62828;font-size:12px;">❌ Đã huỷ</span>
+                                {% elif order.status == 'On The Way' %}
+                                    <span style="color:#1565c0;font-size:12px;">🚚 Đang giao</span>
+                                {% elif order.status == 'Packed' %}
+                                    <span style="color:#e65100;font-size:12px;">📦 Đã đóng gói</span>
+                                {% elif order.status == 'Accepted' %}
+                                    <span style="color:#00838f;font-size:12px;">✔️ Đã xác nhận</span>
+                                {% else %}
+                                    <span style="opacity:0.5;font-size:12px;">⏳ Đang xử lý</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding:8px 0;text-align:right;color:#1565c0;font-weight:600;">
+                                {{ order.product.price|floatformat:0|intcomma }}đ
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% empty %}
+<p style="opacity:0.5;text-align:center;padding:40px;">Chưa có hóa đơn nào.</p>
+{% endfor %}
+
+<script>
+function toggle(id) {
+    const el = document.getElementById(id);
+    const isDetail = id.startsWith('detail-');
+    const key = isDetail ? 'icon-' + id : 'icon-' + id.split('-')[1];
+    const icon = document.getElementById(key);
+    if (el.style.display === 'none') {
+        el.style.display = 'block';
+        icon.textContent = isDetail ? '▼ Thu gọn' : '▼';
+    } else {
+        el.style.display = 'none';
+        icon.textContent = isDetail ? '▶ Xem chi tiết' : '▶';
+    }
+}
+</script>
+
+{% endblock %}

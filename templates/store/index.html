@@ -76,11 +76,12 @@
 </button>
                                     </li>
                                     <li class="list-inline-item m-0 p-0">
-                                        <form action="{% url 'store:add-to-cart' %}" class="d-inline">
-                                            <input type="hidden" name="prod_id" value="{{product.id}}">
-                                            <button type="submit" class="btn btn-sm btn-dark">Thêm vào giỏ</button>
-                                        </form>
-                                    </li>
+    <button type="button" 
+            class="btn btn-sm btn-dark add-cart-btn"
+            data-prod-id="{{ product.id }}">
+        Thêm vào giỏ
+    </button>
+</li>
                                 </ul>
                             </div>
                         </div>
@@ -251,5 +252,35 @@ document.querySelectorAll('.like-btn').forEach(function(btn) {
     });
 });
 </script>
+<script>
+document.querySelectorAll('.add-cart-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const prodId = this.dataset.prodId;
+        const originalText = this.innerText;
+        const btnEl = this;
 
+        fetch("{% url 'store:add-to-cart' %}?prod_id=" + prodId + "&quantity=1&ajax=1")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // Đổi text nút tạm thời
+                    btnEl.innerText = '✓ Đã thêm!';
+                    btnEl.classList.remove('btn-dark');
+                    btnEl.classList.add('btn-success');
+
+                    // Cập nhật số lượng trên navbar
+                    const cartBadge = document.getElementById('cart-count-badge');
+                    if (cartBadge) cartBadge.innerText = data.cart_count;
+
+                    // Reset nút sau 1.5 giây
+                    setTimeout(() => {
+                        btnEl.innerText = originalText;
+                        btnEl.classList.remove('btn-success');
+                        btnEl.classList.add('btn-dark');
+                    }, 1500);
+                }
+            });
+    });
+});
+</script>
 {% endblock content %}

@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<h2 style="margin-bottom:8px;"> Lịch sử thao tác Admin</h2>
+<p style="opacity:0.5;margin-bottom:20px;font-size:13px;">200 thao tác gần nhất — trang này không hiển thị trên menu</p>
+
+{% for log in logs %}
+<div style="border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);
+            padding:12px 20px;display:flex;align-items:center;gap:16px;">
+
+    <!-- Icon loại thao tác -->
+    <span style="font-size:18px;">
+        {% if log.action_flag == 1 %}
+        {% elif log.action_flag == 2 %}
+        {% elif log.action_flag == 3 %}
+        {% endif %}
+    </span>
+
+    <!-- Thông tin -->
+    <div style="flex:1;">
+        <div style="font-weight:600;font-size:13px;">
+            {% if log.action_flag == 1 %}Thêm mới
+            {% elif log.action_flag == 2 %}Chỉnh sửa
+            {% elif log.action_flag == 3 %}Xoá
+            {% endif %}
+            <span style="opacity:0.6;">·</span>
+            <span style="opacity:0.8;">{{ log.content_type.model|capfirst }}</span>
+            <span style="opacity:0.6;">·</span>
+            <span>{{ log.object_repr }}</span>
+        </div>
+        <div style="font-size:12px;opacity:0.5;margin-top:3px;">
+            {{ log.change_message }}
+        </div>
+    </div>
+
+    <!-- Admin & thời gian -->
+    <div style="text-align:right;white-space:nowrap;">
+        <div style="font-size:13px;font-weight:500;">👤 {{ log.user }}</div>
+        <div style="font-size:12px;opacity:0.5;">{{ log.action_time|date:"d/m/Y H:i" }}</div>
+    </div>
+
+</div>
+{% empty %}
+<p style="opacity:0.5;text-align:center;padding:40px;">Chưa có thao tác nào.</p>
+{% endfor %}
+
+{% endblock %}

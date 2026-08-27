@@ -7,93 +7,116 @@
     
     <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0">
       <a href="{% url 'store:home' %}" class="nav-link active text-white">
-      <span class="font-weight-bold text-white" style="font-size: 30px; margin-right: 20px;">ABUFISH</span></a>
-      <a
-        class="navbar-brand"
-        >
-        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'store:search' %}" >
-          <input class="form-control mr-sm-2" action="" style="width: 250px;font-size: 13.5px" method="GET" type="text"
+        <span class="font-weight-bold text-white" style="font-size: 30px; margin-right: 20px;">ABUFISH</span>
+      </a>
+      <a class="navbar-brand">
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'store:search' %}">
+          <input class="form-control mr-sm-2" style="width: 250px;font-size: 13.5px" type="text"
             placeholder="Tìm kiếm ..." aria-label="Search" name="query" value="{{ request.GET.query }}">
-          <button class="btn" style="color: white;border-color: white;font-size: 13.5px ; " type="submit"><i class="fa fa-search" ></i> Tìm kiếm</button>
+          <button class="btn" style="color: white;border-color: white;font-size: 13.5px;" type="submit">
+            <i class="fa fa-search"></i> Tìm kiếm
+          </button>
         </form>
-        <!-- <span class="font-weight-bold text-white">ABUFISH</span></a> -->
+      </a>
+
       <button class="navbar-toggler navbar-toggler-right" type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
+        data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link active text-white"href="{% url 'store:home' %}">   Trang chủ</a>
+            <a class="nav-link active text-white" href="{% url 'store:home' %}">Trang chủ</a>
           </li>
           <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-white" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Danh mục</a>
-          <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-            {% if categories_menu %}
-              {% for cat_menu in categories_menu %}
-                <a class="dropdown-item border-0 transition-link"
-                  href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
-              {% endfor %}
-            {% endif %}
-            <hr>
-            <a class="dropdown-item border-0 transition-link" href="{% url 'store:all-categories'  %}">Tất cả danh mục</a>
-                       
-        </ul>
-          <ul class="navbar-nav ml-auto">
-            {% if request.user.is_authenticated %}
-            <li class="nav-item" ><a class="nav-link my text-white" style="font-size: 12px;" href="{% url 'store:cart' %}"> <i
-                  class="fas fa-dolly-flatbed mr-1 text-white"></i>Giỏ hàng<small
-                  class="text-white">({{cart_items.count}})</small></a></li>
-
-            <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" id="pagesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-              style="font-size: 12px;" href="#">
-                <i class="far fa-bell mr-1"> </i>Thông báo
+            <a class="nav-link dropdown-toggle text-white" id="pagesDropdown" href="#"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Danh mục
             </a>
-              
-            <div class="dropdown-menu mt-3" style="position: absolute; border-radius: 12px; overflow-y: auto; max-height: 300px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);" aria-labelledby="pagesDropdown">
-              <a class="dropdown-item border-0 transition-link" href="#">Thông báo</a>
-              <hr>             
+            <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
+              {% if categories_menu %}
+                {% for cat_menu in categories_menu %}
+                  <a class="dropdown-item border-0 transition-link"
+                     href="{% url 'store:category-products' cat_menu.slug %}">{{ cat_menu.title }}</a>
+                {% endfor %}
+              {% endif %}
+              <hr>
+              <a class="dropdown-item border-0 transition-link" href="{% url 'store:all-categories' %}">Tất cả danh mục</a>
+            </div>
+          </li>
+        </ul>
 
-                {% if notification_list %}   
-                  {% if length == 0 %}
-                    <p class="dropdown-item border-0 transition-link" style="font-size: 10px;">Bạn chưa có thông báo.</p>
-                  {% endif %}
-                  {% for notification in notification_list %}   
-                      {% if notification.type == 1%}                
-                      <a class="dropdown-item border-0 transition-link" style="font-size: 10px;"  href="{% url 'store:product-detail' notification.slug %}"> 
-                        {{notification.content}}                     
-                      </a>
-                      <p style="margin-right: 15px; text-align: right; font-size: 10px;" class="small text-muted mb-0 ">{{notification.date_added|naturaltime}}</p>
-                      {% else %}
-                      <a class="dropdown-item border-0 transition-link" style="font-size: 10px;"
-                        href="{% url 'store:orders' %}">
-                        {{notification.content}}
-                      </a>
-                      <p style="margin-right: 15px; text-align: right; font-size: 10px;" class="small text-muted mb-0 ">
-                        {{notification.date_added|naturaltime}}</p>
-                      {% endif %}
-                  {% endfor %}
+        <ul class="navbar-nav ml-auto align-items-center">
+          {% if request.user.is_authenticated %}
 
-                {% endif %}
+          <!-- Giỏ hàng (icon badge) -->
+          <li class="nav-item mr-2">
+            <a href="{% url 'store:cart' %}" class="nav-link py-0 text-white position-relative d-inline-flex align-items-center justify-content-center" style="width:42px; height:42px;">
+              <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
+              <span style="
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                background: #e53935;
+                color: white;
+                font-size: 10px;
+                font-weight: 700;
+                min-width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a94ff;
+                line-height: 1;
+              ">{{ cart_items.count }}</span>
+            </a>
           </li>
 
-            {% comment %} <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="fas fa-user-alt mr-1"></i>
-                Tài khoản của tôi
-              </a>
-            </li> {% endcomment %}
+          <!-- Thông báo -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" id="bellDropdown"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               style="font-size: 12px;" href="#">
+              <i class="far fa-bell mr-1"></i>Thông báo
+            </a>
+            <div class="dropdown-menu mt-3"
+                 style="position: absolute; border-radius: 12px; overflow-y: auto; max-height: 300px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"
+                 aria-labelledby="bellDropdown">
+              <a class="dropdown-item border-0 transition-link" href="#">Thông báo</a>
+              <hr>
+              {% if notification_list %}
+                {% if length == 0 %}
+                  <p class="dropdown-item border-0 transition-link" style="font-size: 10px;">Bạn chưa có thông báo.</p>
+                {% endif %}
+                {% for notification in notification_list %}
+                  {% if notification.type == 1 %}
+                    <a class="dropdown-item border-0 transition-link" style="font-size: 10px;"
+                       href="{% url 'store:product-detail' notification.slug %}">{{ notification.content }}</a>
+                    <p style="margin-right: 15px; text-align: right; font-size: 10px;"
+                       class="small text-muted mb-0">{{ notification.date_added|naturaltime }}</p>
+                  {% else %}
+                    <a class="dropdown-item border-0 transition-link" style="font-size: 10px;"
+                       href="{% url 'store:orders' %}">{{ notification.content }}</a>
+                    <p style="margin-right: 15px; text-align: right; font-size: 10px;"
+                       class="small text-muted mb-0">{{ notification.date_added|naturaltime }}</p>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+          </li>
 
-            <li class="nav-item dropdown"><a class="nav-link dropdown-toggle
-                text-white" style="font-size: 12px;" id="pagesDropdown" href="#"
-                data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false"><i
-                  class="fas fa-user-alt mr-1 text-white"></i>Tài khoản</a></a>
-            <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-
+          <!-- Tài khoản -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" style="font-size: 12px;"
+               id="accountDropdown" href="#" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-user-alt mr-1 text-white"></i>Tài khoản
+            </a>
+            <div class="dropdown-menu mt-3" aria-labelledby="accountDropdown">
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Tài khoản</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:like-products' %}">Sản phẩm yêu thích</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Giỏ hàng</a>
@@ -101,23 +124,53 @@
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:invoice' %}">Hoá đơn</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:purchase-orders' %}">Đơn đã mua</a>
               <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Đổi mật khẩu</a>
-
               <hr>
-             <form action="{% url 'store:logout' %}" method="post" id="logout-form" style="display: none;">
-    {% csrf_token %}
-</form>
+              <form action="{% url 'store:logout' %}" method="post" id="logout-form" style="display: none;">
+                {% csrf_token %}
+              </form>
+              <a class="dropdown-item border-0 transition-link" href="javascript:void(0)"
+                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Đăng xuất
+              </a>
+            </div>
+          </li>
 
-<a class="dropdown-item border-0 transition-link" href="javascript:void(0)" 
-   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-   Đăng xuất
-</a>
-            </li>
-            {% else %}
-            <li class="nav-item"><a class="nav-link text-white" style="font-size: 15px;" href="{% url 'store:login' %}">Đăng nhập</a></li>
-            <li class="nav-item"><a class="nav-link text-white" style="font-size: 15px;" href="{% url 'store:register' %}">Tạo tài khoản</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </header>
+          {% else %}
+
+          <!-- Giỏ hàng (chưa đăng nhập) -->
+          <li class="nav-item mr-2">
+            <a href="{% url 'store:cart' %}" class="nav-link py-0 text-white position-relative d-inline-flex align-items-center justify-content-center" style="width:42px; height:42px;">
+              <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
+              <span style="
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                background: #e53935;
+                color: white;
+                font-size: 10px;
+                font-weight: 700;
+                min-width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a94ff;
+                line-height: 1;
+              ">0</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white" style="font-size: 15px;" href="{% url 'store:login' %}">Đăng nhập</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" style="font-size: 15px;" href="{% url 'store:register' %}">Tạo tài khoản</a>
+          </li>
+
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>

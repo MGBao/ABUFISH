@@ -1,0 +1,67 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">Bình luận theo sản phẩm</h2>
+
+{% for item in data %}
+<div style="border-radius:8px;margin-bottom:12px;border:1px solid var(--border-color);overflow:hidden;">
+
+    <!-- Header sản phẩm -->
+    <div onclick="toggle('cmt-{{ forloop.counter }}')"
+         style="background:var(--darkened-bg);padding:12px 20px;display:flex;align-items:center;
+                justify-content:space-between;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <strong style="font-size:14px;">{{ item.product.title }}</strong>
+            <span style="font-size:12px;opacity:0.6;">{{ item.comments.count }} bình luận</span>
+        </div>
+        <span id="icon-{{ forloop.counter }}" style="font-size:12px;opacity:0.6;">▶</span>
+    </div>
+
+    <!-- Danh sách bình luận -->
+    <div id="cmt-{{ forloop.counter }}" style="display:none;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+                <tr style="background:var(--darkened-bg);text-align:left;opacity:0.7;">
+                    <th style="padding:8px 20px;">Khách hàng</th>
+                    <th style="padding:8px 20px;">Nội dung</th>
+                    <th style="padding:8px 20px;text-align:right;">Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in item.comments %}
+                <tr style="border-top:1px solid var(--border-color);">
+                    <td style="padding:10px 20px;font-weight:500;white-space:nowrap;">
+                         {{ comment.commenter_name }}
+                    </td>
+                    <td style="padding:10px 20px;">{{ comment.comment_body }}</td>
+                    <td style="padding:10px 20px;text-align:right;opacity:0.5;font-size:12px;white-space:nowrap;">
+                        {{ comment.date_added|date:"d/m/Y H:i" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% empty %}
+<p style="opacity:0.5;text-align:center;padding:40px;">Chưa có bình luận nào.</p>
+{% endfor %}
+
+<script>
+function toggle(id) {
+    const el = document.getElementById(id);
+    const counter = id.split('-')[1];
+    const icon = document.getElementById('icon-' + counter);
+    if (el.style.display === 'none') {
+        el.style.display = 'block';
+        icon.textContent = '▼';
+    } else {
+        el.style.display = 'none';
+        icon.textContent = '▶';
+    }
+}
+</script>
+
+{% endblock %}

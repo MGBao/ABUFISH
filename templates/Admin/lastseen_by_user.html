@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">Lịch sử xem sản phẩm theo khách hàng</h2>
+
+{% for item in data %}
+<div style="border-radius:8px;margin-bottom:12px;border:1px solid var(--border-color);overflow:hidden;">
+
+    <div onclick="toggle('user-{{ forloop.counter }}')"
+         style="background:var(--darkened-bg);padding:12px 20px;border-bottom:1px solid var(--border-color);
+                display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            
+            <strong style="font-size:14px;">{{ item.user.username }}</strong>
+            <span style="font-size:12px;opacity:0.6;">{{ item.products.count }} sản phẩm đã xem</span>
+        </div>
+        <span id="icon-{{ forloop.counter }}" style="font-size:12px;opacity:0.6;">▶</span>
+    </div>
+
+    <div id="user-{{ forloop.counter }}" style="display:none;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+                <tr style="background:var(--darkened-bg);text-align:left;opacity:0.7;">
+                    <th style="padding:8px 20px;">Sản phẩm</th>
+                    <th style="padding:8px 20px;text-align:right;">Thời gian xem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in item.products %}
+                <tr style="border-top:1px solid var(--border-color);">
+                    <td style="padding:10px 20px;font-weight:500;">{{ p.product.title }}</td>
+                    <td style="padding:10px 20px;text-align:right;opacity:0.6;">
+                        {{ p.created_at|date:"d/m/Y H:i" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% empty %}
+<p style="opacity:0.5;text-align:center;padding:40px;">Chưa có lịch sử xem sản phẩm nào.</p>
+{% endfor %}
+
+<script>
+function toggle(id) {
+    const el = document.getElementById(id);
+    const counter = id.split('-')[1];
+    const icon = document.getElementById('icon-' + counter);
+    if (el.style.display === 'none') {
+        el.style.display = 'block';
+        icon.textContent = '▼';
+    } else {
+        el.style.display = 'none';
+        icon.textContent = '▶';
+    }
+}
+</script>
+
+{% endblock %}
